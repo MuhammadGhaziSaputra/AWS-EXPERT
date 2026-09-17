@@ -6,7 +6,7 @@ Catatan:
 - Pastikan visibilitas repository diatur ke PUBLIC
 - Repository harus berisi:
   1. .github/workflows/preprocessing.yml
-  2. wine_quality_raw/winequality-red.csv
+  2. breast_cancer_raw/breast-cancer.csv
   3. preprocessing/Eksperimen_gaji.ipynb
   4. preprocessing/automate_gaji.py
-  5. preprocessing/wine_quality_preprocessing/ (hasil preprocessing)
+  5. preprocessing/breast_cancer_preprocessing/ (hasil preprocessing)

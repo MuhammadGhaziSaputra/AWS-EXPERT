@@ -4,7 +4,7 @@ Training model ML dengan Hyperparameter Tuning dan Manual Logging ke MLflow.
 Level: Advanced - dengan DagsHub integration dan artefak tambahan.
 
 Author: gaji
-Dataset: Wine Quality (Red Wine) - Binary Classification
+Dataset: Breast Cancer Wisconsin - Binary Classification
 Model: Random Forest Classifier + GridSearchCV
 MLflow: Manual logging (bukan autolog)
 Artefak tambahan: confusion_matrix, feature_importance, classification_report, ROC curve
@@ -29,16 +29,13 @@ import json
 import os
 import tempfile
 import warnings
+import sys
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 warnings.filterwarnings('ignore')
-
-# ============================================================
-# Konfigurasi DagsHub (untuk Advanced)
-# ============================================================
-# Uncomment baris di bawah ini jika menggunakan DagsHub:
-# import dagshub
-# dagshub.init(repo_owner='<nama_owner>', repo_name='<nama_repo>', mlflow=True)
-# ============================================================
-
 
 def load_preprocessed_data(data_dir: str) -> tuple:
     """Load preprocessed data dari folder."""
@@ -56,7 +53,7 @@ def create_confusion_matrix_plot(y_test, y_pred, save_path):
     plt.figure(figsize=(8, 6))
     cm = confusion_matrix(y_test, y_pred)
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-                xticklabels=['Bad', 'Good'], yticklabels=['Bad', 'Good'])
+                xticklabels=['Malignant', 'Benign'], yticklabels=['Malignant', 'Benign'])
     plt.title('Confusion Matrix - Tuned Random Forest', fontsize=14, fontweight='bold')
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
@@ -107,7 +104,7 @@ def create_prediction_distribution_plot(y_prob, save_path):
     plt.hist(y_prob, bins=50, color='steelblue', edgecolor='black', alpha=0.7)
     plt.axvline(0.5, color='red', linestyle='--', linewidth=2, label='Threshold (0.5)')
     plt.title('Distribution of Prediction Probabilities', fontsize=14, fontweight='bold')
-    plt.xlabel('Probability of Good Wine')
+    plt.xlabel('Probability of Benign')
     plt.ylabel('Count')
     plt.legend()
     plt.tight_layout()
@@ -121,14 +118,14 @@ def train_model_with_tuning():
     
     # Path ke preprocessed data
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    data_dir = os.path.join(script_dir, 'wine_quality_preprocessing')
+    data_dir = os.path.join(script_dir, 'breast_cancer_preprocessing')
     
     # Load data
     X_train, X_test, y_train, y_test = load_preprocessed_data(data_dir)
     
     # Setup MLflow
     mlflow.set_tracking_uri("http://127.0.0.1:5000")
-    mlflow.set_experiment("wine-quality-tuning")
+    mlflow.set_experiment("breast-cancer-tuning")
     
     # Hyperparameter grid
     param_grid = {
@@ -206,7 +203,7 @@ def train_model_with_tuning():
         mlflow.sklearn.log_model(
             best_model,
             artifact_path="model",
-            registered_model_name="wine-quality-rf-tuned"
+            registered_model_name="breast-cancer-rf-tuned"
         )
         
         # === LOG ARTEFAK TAMBAHAN (Advanced: autolog + minimal 2 artefak tambahan) ===
@@ -235,7 +232,7 @@ def train_model_with_tuning():
             
             # Artefak 5: Classification Report (text)
             report_path = os.path.join(tmp_dir, 'classification_report.txt')
-            report = classification_report(y_test, y_pred, target_names=['Bad', 'Good'])
+            report = classification_report(y_test, y_pred, target_names=['Malignant', 'Benign'])
             with open(report_path, 'w') as f:
                 f.write("Classification Report - Tuned Random Forest\n")
                 f.write("=" * 50 + "\n\n")
@@ -257,8 +254,8 @@ def train_model_with_tuning():
                 "best_params": best_params,
                 "metrics": {k: round(v, 4) for k, v in metrics.items()},
                 "features": X_train.columns.tolist(),
-                "target": "quality_label",
-                "dataset": "Wine Quality (Red)",
+                "target": "target",
+                "dataset": "Breast Cancer (Red)",
                 "preprocessing": "StandardScaler + IQR Outlier Clipping"
             }
             with open(metadata_path, 'w') as f:
@@ -268,7 +265,7 @@ def train_model_with_tuning():
         
         # === TAGS ===
         mlflow.set_tag("author", "gaji")
-        mlflow.set_tag("dataset", "wine-quality-red")
+        mlflow.set_tag("dataset", "breast-cancer-wisconsin")
         mlflow.set_tag("level", "advanced")
         mlflow.set_tag("tuning_method", "GridSearchCV")
         
@@ -284,7 +281,7 @@ def train_model_with_tuning():
     print(f"\nBest Parameters: {best_params}")
     print(f"\n✅ Semua artefak berhasil disimpan ke MLflow!")
     print(f"   Tracking URI: http://127.0.0.1:5000")
-    print(f"   Experiment: wine-quality-tuning")
+    print(f"   Experiment: breast-cancer-tuning")
     print(f"   Run ID: {run_id}")
     print(f"\n📦 Artefak yang di-log:")
     print(f"   1. Model (sklearn)")

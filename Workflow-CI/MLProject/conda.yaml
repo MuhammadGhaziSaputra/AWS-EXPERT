@@ -1,4 +1,4 @@
-name: wine_quality_env
+name: breast_cancer_env
 channels:
   - defaults
   - conda-forge

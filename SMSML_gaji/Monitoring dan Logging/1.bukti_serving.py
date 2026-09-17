@@ -26,7 +26,7 @@ import os
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("  WINE QUALITY MODEL SERVING")
+    print("  BREAST CANCER MODEL SERVING")
     print("  Author: gaji")
     print("=" * 60)
     print()

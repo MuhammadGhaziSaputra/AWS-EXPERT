@@ -3,7 +3,7 @@ modelling.py
 Training model Machine Learning menggunakan MLflow autolog.
 
 Author: gaji
-Dataset: Wine Quality (Red Wine) - Binary Classification
+Dataset: Breast Cancer Wisconsin - Binary Classification
 Model: Random Forest Classifier
 MLflow Tracking: localhost
 """
@@ -16,6 +16,12 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 import os
 import warnings
+import sys
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 warnings.filterwarnings('ignore')
 
 
@@ -35,14 +41,14 @@ def train_model_with_autolog():
     
     # Path ke preprocessed data
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    data_dir = os.path.join(script_dir, 'wine_quality_preprocessing')
+    data_dir = os.path.join(script_dir, 'breast_cancer_preprocessing')
     
     # Load data
     X_train, X_test, y_train, y_test = load_preprocessed_data(data_dir)
     
     # Setup MLflow
     mlflow.set_tracking_uri("http://127.0.0.1:5000")
-    mlflow.set_experiment("wine-quality-autolog")
+    mlflow.set_experiment("breast-cancer-autolog")
     
     # Enable autolog
     mlflow.sklearn.autolog()
@@ -70,11 +76,11 @@ def train_model_with_autolog():
         print(f"{'='*50}")
         print(f"Accuracy: {accuracy:.4f}")
         print(f"\nClassification Report:")
-        print(classification_report(y_test, y_pred, target_names=['Bad', 'Good']))
+        print(classification_report(y_test, y_pred, target_names=['Malignant', 'Benign']))
         
         print(f"\n✅ Model dan artefak berhasil disimpan ke MLflow!")
         print(f"   Tracking URI: http://127.0.0.1:5000")
-        print(f"   Experiment: wine-quality-autolog")
+        print(f"   Experiment: breast-cancer-autolog")
         print(f"   Run ID: {mlflow.active_run().info.run_id}")
 
 

@@ -1,4 +1,4 @@
-# 📊 Panduan Monitoring & Logging - Wine Quality ML Model
+# 📊 Panduan Monitoring & Logging - Breast Cancer ML Model
 
 **Author:** gaji  
 **Proyek:** Membangun Sistem Machine Learning (Dicoding)
@@ -29,7 +29,7 @@ docker-compose ps
 ```
 
 **Pastikan 3 container berjalan:**
-- `wine-quality-model` (API port 8000, Metrics port 8001)
+- `breast-cancer-model` (API port 8000, Metrics port 8001)
 - `prometheus` (port 9090)
 - `grafana` (port 3000)
 
@@ -89,7 +89,7 @@ Script ini akan:
 ### 4c. Bukti Monitoring Grafana
 1. Buka http://localhost:3000
 2. Login: **admin** / **admin** (skip ganti password)
-3. Navigasi ke: **Dashboards** → **ML Monitoring** → **Wine Quality ML Model - Monitoring**
+3. Navigasi ke: **Dashboards** → **ML Monitoring** → **Breast Cancer ML Model - Monitoring**
 4. **Screenshot 1:** Dashboard overview (tampilan penuh)
 5. Scroll ke bawah
 6. **Screenshot 2:** Panel latency & confidence
@@ -159,7 +159,7 @@ Monitoring dan Logging/
 ├── requirements_serving.txt    # Dependencies for Docker
 └── grafana/
     ├── dashboards/
-    │   └── wine-quality-monitoring.json
+    │   └── breast-cancer-monitoring.json
     └── provisioning/
         ├── alerting/
         │   └── alerts.yml

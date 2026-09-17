@@ -44,7 +44,7 @@ def main():
     parser.add_argument('--max_depth', type=int, default=10)
     parser.add_argument('--min_samples_split', type=int, default=5)
     parser.add_argument('--min_samples_leaf', type=int, default=2)
-    parser.add_argument('--data_dir', type=str, default='wine_quality_preprocessing')
+    parser.add_argument('--data_dir', type=str, default='breast_cancer_preprocessing')
     args = parser.parse_args()
     
     # Load data
@@ -94,7 +94,7 @@ def main():
             plt.figure(figsize=(8, 6))
             cm = confusion_matrix(y_test, y_pred)
             sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-                       xticklabels=['Bad', 'Good'], yticklabels=['Bad', 'Good'])
+                       xticklabels=['Malignant', 'Benign'], yticklabels=['Malignant', 'Benign'])
             plt.title('Confusion Matrix')
             plt.xlabel('Predicted')
             plt.ylabel('Actual')
@@ -105,7 +105,7 @@ def main():
             
             # Classification report
             report_path = os.path.join(tmp_dir, 'classification_report.txt')
-            report = classification_report(y_test, y_pred, target_names=['Bad', 'Good'])
+            report = classification_report(y_test, y_pred, target_names=['Malignant', 'Benign'])
             with open(report_path, 'w') as f:
                 f.write(report)
             mlflow.log_artifact(report_path, "reports")

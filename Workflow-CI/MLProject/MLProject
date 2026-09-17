@@ -1,4 +1,4 @@
-name: wine_quality_training
+name: breast_cancer_training
 conda_env: conda.yaml
 
 entry_points:
@@ -8,7 +8,7 @@ entry_points:
       max_depth: {type: int, default: 10}
       min_samples_split: {type: int, default: 5}
       min_samples_leaf: {type: int, default: 2}
-      data_dir: {type: str, default: "wine_quality_preprocessing"}
+      data_dir: {type: str, default: "breast_cancer_preprocessing"}
     command: >
       python modelling.py
       --n_estimators {n_estimators}

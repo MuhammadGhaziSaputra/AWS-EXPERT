@@ -1,0 +1,6 @@
+artifact_location: mlflow-artifacts:/960167898935564799
+creation_time: 1789635142241
+experiment_id: '960167898935564799'
+last_update_time: 1789635142241
+lifecycle_stage: active
+name: breast-cancer-autolog

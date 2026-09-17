@@ -53,7 +53,7 @@ jobs:
             --max_depth ${{ github.event.inputs.max_depth || '10' }} \
             --min_samples_split 5 \
             --min_samples_leaf 2 \
-            --data_dir wine_quality_preprocessing
+            --data_dir breast_cancer_preprocessing
 
       - name: Upload model artifacts to GitHub
         uses: actions/upload-artifact@v4
@@ -95,27 +95,27 @@ jobs:
             echo "Building Docker image from run: $LATEST_RUN"
             mlflow models build-docker \
               -m "MLProject/mlruns/0/$LATEST_RUN/artifacts/model" \
-              -n "${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model" \
+              -n "${{ secrets.DOCKERHUB_USERNAME }}/breast-cancer-model" \
               --enable-mlserver
           else
             echo "Building Docker image from MLProject directory"
             cd MLProject
             mlflow models build-docker \
               -m "model" \
-              -n "${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model" \
+              -n "${{ secrets.DOCKERHUB_USERNAME }}/breast-cancer-model" \
               --enable-mlserver
           fi
 
       - name: Push Docker Image to Docker Hub
         run: |
-          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:latest \
-            ${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:${{ github.sha }}
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/breast-cancer-model:latest \
+            ${{ secrets.DOCKERHUB_USERNAME }}/breast-cancer-model:${{ github.sha }}
           
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:${{ github.sha }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/breast-cancer-model:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/breast-cancer-model:${{ github.sha }}
           
           echo "✅ Docker image pushed successfully!"
-          echo "   Image: ${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:latest"
+          echo "   Image: ${{ secrets.DOCKERHUB_USERNAME }}/breast-cancer-model:latest"
 
       - name: Job Summary
         run: |
@@ -126,5 +126,5 @@ jobs:
           echo "- Docker image pushed to Docker Hub" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Docker Image" >> $GITHUB_STEP_SUMMARY
-          echo '- `${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:latest`' >> $GITHUB_STEP_SUMMARY
-          echo '- `${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:${{ github.sha }}`' >> $GITHUB_STEP_SUMMARY
+          echo '- `${{ secrets.DOCKERHUB_USERNAME }}/breast-cancer-model:latest`' >> $GITHUB_STEP_SUMMARY
+          echo '- `${{ secrets.DOCKERHUB_USERNAME }}/breast-cancer-model:${{ github.sha }}`' >> $GITHUB_STEP_SUMMARY

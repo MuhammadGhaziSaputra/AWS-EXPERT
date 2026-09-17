@@ -62,10 +62,10 @@ groups:
         for: 2m
         annotations:
           summary: "Error rate prediksi melebihi 5%"
-          description: "Error rate model prediksi wine quality melebihi threshold 5% dalam 5 menit terakhir."
+          description: "Error rate model prediksi breast cancer melebihi threshold 5% dalam 5 menit terakhir."
         labels:
           severity: warning
-          service: wine-quality-model
+          service: breast-cancer-model
 
       # Alert 2: High Prediction Latency
       - uid: ml-high-latency
@@ -78,7 +78,7 @@ groups:
               to: 0
             datasourceUid: prometheus
             model:
-              expr: histogram_quantile(0.95, rate(ml_model_prediction_latency_seconds_bucket{model_name="wine-quality-rf"}[5m]))
+              expr: histogram_quantile(0.95, rate(ml_model_prediction_latency_seconds_bucket{model_name="breast-cancer-rf"}[5m]))
               intervalMs: 1000
               maxDataPoints: 43200
               refId: A
@@ -116,7 +116,7 @@ groups:
           description: "95th percentile latensi prediksi model melebihi 500ms."
         labels:
           severity: warning
-          service: wine-quality-model
+          service: breast-cancer-model
 
       # Alert 3: Data Drift Detected
       - uid: ml-data-drift
@@ -129,7 +129,7 @@ groups:
               to: 0
             datasourceUid: prometheus
             model:
-              expr: sum(ml_model_input_data_drift{model_name="wine-quality-rf"}) or vector(0)
+              expr: sum(ml_model_input_data_drift{model_name="breast-cancer-rf"}) or vector(0)
               intervalMs: 1000
               maxDataPoints: 43200
               refId: A
@@ -167,7 +167,7 @@ groups:
           description: "Satu atau lebih input features menunjukkan data drift (z-score > 3 dari distribusi training)."
         labels:
           severity: critical
-          service: wine-quality-model
+          service: breast-cancer-model
 
       # Alert 4: High Memory Usage
       - uid: ml-high-memory
@@ -180,7 +180,7 @@ groups:
               to: 0
             datasourceUid: prometheus
             model:
-              expr: ml_model_memory_usage_bytes{model_name="wine-quality-rf"} / 1024 / 1024
+              expr: ml_model_memory_usage_bytes{model_name="breast-cancer-rf"} / 1024 / 1024
               intervalMs: 1000
               maxDataPoints: 43200
               refId: A
@@ -218,4 +218,4 @@ groups:
           description: "Memory usage proses model serving melebihi 500MB."
         labels:
           severity: warning
-          service: wine-quality-model
+          service: breast-cancer-model

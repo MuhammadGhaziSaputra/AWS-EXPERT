@@ -1,10 +1,10 @@
 """
 automate_gaji.py
-Script otomatis untuk preprocessing dataset Wine Quality.
+Script otomatis untuk preprocessing dataset Breast Cancer.
 Mengkonversi langkah-langkah eksperimen dari notebook ke pipeline otomatis.
 
 Author: gaji
-Dataset: Wine Quality (Red Wine)
+Dataset: Breast Cancer Wisconsin
 """
 
 import pandas as pd
@@ -38,7 +38,7 @@ def load_data(filepath: str) -> pd.DataFrame:
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"File tidak ditemukan: {filepath}")
     
-    df = pd.read_csv(filepath, sep=';')
+    df = pd.read_csv(filepath)
     logger.info(f"Data berhasil di-load. Shape: {df.shape}")
     logger.info(f"Kolom: {list(df.columns)}")
     
@@ -70,10 +70,10 @@ def explore_data(df: pd.DataFrame) -> dict:
     eda_results["statistics"] = stats.to_dict()
     
     # Distribusi target
-    if 'quality' in df.columns:
-        quality_dist = df['quality'].value_counts().to_dict()
-        eda_results["quality_distribution"] = {str(k): int(v) for k, v in quality_dist.items()}
-        logger.info(f"Distribusi Quality: {quality_dist}")
+    if 'target' in df.columns:
+        target_dist = df['target'].value_counts().to_dict()
+        eda_results["target_distribution"] = {str(k): int(v) for k, v in target_dist.items()}
+        logger.info(f"Distribusi Target: {target_dist}")
     
     logger.info(f"Missing values: {df.isnull().sum().sum()}")
     logger.info(f"Duplikat: {eda_results['duplicates']}")
@@ -145,10 +145,8 @@ def handle_outliers(df: pd.DataFrame, columns: list = None, method: str = 'iqr')
     if columns is None:
         columns = df.select_dtypes(include=[np.number]).columns.tolist()
         # Exclude target column
-        if 'quality' in columns:
-            columns.remove('quality')
-        if 'quality_label' in columns:
-            columns.remove('quality_label')
+        if 'target' in columns:
+            columns.remove('target')
     
     initial_shape = df.shape[0]
     
@@ -172,30 +170,24 @@ def handle_outliers(df: pd.DataFrame, columns: list = None, method: str = 'iqr')
     return df
 
 
-def create_binary_target(df: pd.DataFrame, threshold: int = 7) -> pd.DataFrame:
+def prepare_target(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Konversi kolom quality menjadi label biner.
-    quality >= threshold -> 1 (good)
-    quality < threshold -> 0 (bad)
+    Pastikan target formatnya sesuai jika diperlukan.
+    Untuk breast cancer, target sudah 0 dan 1.
     
     Args:
         df: DataFrame input
-        threshold: Threshold untuk klasifikasi
         
     Returns:
-        DataFrame dengan kolom quality_label
+        DataFrame
     """
-    logger.info(f"Membuat target biner (threshold >= {threshold})...")
+    logger.info("Memeriksa target...")
     
-    df['quality_label'] = (df['quality'] >= threshold).astype(int)
-    
-    good_count = df['quality_label'].sum()
-    bad_count = len(df) - good_count
-    logger.info(f"  Good (1): {good_count}, Bad (0): {bad_count}")
-    
-    # Drop kolom quality original
-    df = df.drop('quality', axis=1)
-    
+    if 'target' in df.columns:
+        good_count = (df['target'] == 1).sum()
+        bad_count = (df['target'] == 0).sum()
+        logger.info(f"  Benign (1): {good_count}, Malignant (0): {bad_count}")
+        
     return df
 
 
@@ -229,7 +221,7 @@ def feature_scaling(X_train: pd.DataFrame, X_test: pd.DataFrame) -> tuple:
     return X_train_scaled, X_test_scaled, scaler
 
 
-def split_data(df: pd.DataFrame, target_col: str = 'quality_label', 
+def split_data(df: pd.DataFrame, target_col: str = 'target', 
                test_size: float = 0.2, random_state: int = 42) -> tuple:
     """
     Membagi data menjadi training dan testing set.
@@ -289,8 +281,8 @@ def run_preprocessing_pipeline(input_path: str, output_dir: str) -> dict:
     # 5. Handle outliers
     df = handle_outliers(df)
     
-    # 6. Create binary target
-    df = create_binary_target(df, threshold=7)
+    # 6. Prepare target
+    df = prepare_target(df)
     
     # 7. Split data
     X_train, X_test, y_train, y_test = split_data(df)
@@ -322,7 +314,7 @@ def run_preprocessing_pipeline(input_path: str, output_dir: str) -> dict:
         "original_shape": list(eda_results["shape"]),
         "final_shape": list(df.shape),
         "features": X_train.columns.tolist(),
-        "target": "quality_label",
+        "target": "target",
         "train_size": X_train_scaled.shape[0],
         "test_size": X_test_scaled.shape[0],
         "preprocessing_steps": [
@@ -330,7 +322,7 @@ def run_preprocessing_pipeline(input_path: str, output_dir: str) -> dict:
             "handle_missing_values",
             "remove_duplicates",
             "handle_outliers (IQR clipping)",
-            "create_binary_target (threshold=7)",
+            "prepare_target",
             "train_test_split (80/20, stratified)",
             "feature_scaling (StandardScaler)"
         ]
@@ -351,8 +343,8 @@ if __name__ == "__main__":
     # Path configuration
     script_dir = os.path.dirname(os.path.abspath(__file__))
     
-    input_path = os.path.join(script_dir, '..', 'wine_quality_raw', 'winequality-red.csv')
-    output_dir = os.path.join(script_dir, 'wine_quality_preprocessing')
+    input_path = os.path.join(script_dir, '..', 'breast_cancer_raw', 'breast_cancer.csv')
+    output_dir = os.path.join(script_dir, 'breast_cancer_preprocessing')
     
     # Run pipeline
     metadata = run_preprocessing_pipeline(input_path, output_dir)

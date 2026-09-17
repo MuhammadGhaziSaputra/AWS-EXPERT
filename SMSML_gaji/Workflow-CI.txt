@@ -9,7 +9,7 @@ Catatan:
   2. MLProject/modelling.py
   3. MLProject/conda.yaml
   4. MLProject/MLProject
-  5. MLProject/wine_quality_preprocessing/ (preprocessed data)
+  5. MLProject/breast_cancer_preprocessing/ (preprocessed data)
 
 Secrets yang perlu ditambahkan di GitHub:
   - MLFLOW_TRACKING_URI: URI MLflow tracking server
