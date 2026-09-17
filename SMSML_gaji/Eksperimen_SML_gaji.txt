@@ -1,5 +1,5 @@
 Tautan Repository GitHub Kriteria 1 (Eksperimen):
-https://github.com/MuhammadGhaziSaputra/Eksperimen_SML_gaji
+https://github.com/MuhammadGhaziSaputra/AWS-EXPERT/tree/main/Eksperimen_SML_gaji
 
 Catatan:
 - Ganti <username> dengan username GitHub Anda

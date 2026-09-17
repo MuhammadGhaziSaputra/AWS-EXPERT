@@ -1,5 +1,5 @@
 Tautan Repository GitHub Kriteria 3 (Workflow CI):
-https://github.com/MuhammadGhaziSaputra/Workflow-CI
+https://github.com/MuhammadGhaziSaputra/AWS-EXPERT/tree/main/Workflow-CI
 
 Catatan:
 - Ganti <username> dengan username GitHub Anda
