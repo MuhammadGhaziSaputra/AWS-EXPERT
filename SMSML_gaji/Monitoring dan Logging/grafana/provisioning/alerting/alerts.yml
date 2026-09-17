@@ -1,0 +1,221 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: ML Model Alerts
+    folder: ML Monitoring
+    interval: 1m
+    rules:
+      # Alert 1: High Error Rate
+      - uid: ml-high-error-rate
+        title: High Prediction Error Rate
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: sum(rate(ml_model_prediction_errors_total[5m])) or vector(0)
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: sum(rate(ml_model_predictions_total[5m])) or vector(0.001)
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0.05
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    type: last
+              datasource:
+                name: Expression
+                type: __expr__
+                uid: __expr__
+              expression: $A / $B
+              reducer: last
+              type: math
+              refId: C
+        noDataState: OK
+        execErrState: Alerting
+        for: 2m
+        annotations:
+          summary: "Error rate prediksi melebihi 5%"
+          description: "Error rate model prediksi wine quality melebihi threshold 5% dalam 5 menit terakhir."
+        labels:
+          severity: warning
+          service: wine-quality-model
+
+      # Alert 2: High Prediction Latency
+      - uid: ml-high-latency
+        title: High Prediction Latency
+        condition: B
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: histogram_quantile(0.95, rate(ml_model_prediction_latency_seconds_bucket{model_name="wine-quality-rf"}[5m]))
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0.5
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    type: last
+              datasource:
+                name: Expression
+                type: __expr__
+                uid: __expr__
+              expression: A
+              reducer: last
+              type: threshold
+              refId: B
+        noDataState: OK
+        execErrState: Alerting
+        for: 2m
+        annotations:
+          summary: "Latensi prediksi melebihi 500ms (p95)"
+          description: "95th percentile latensi prediksi model melebihi 500ms."
+        labels:
+          severity: warning
+          service: wine-quality-model
+
+      # Alert 3: Data Drift Detected
+      - uid: ml-data-drift
+        title: Data Drift Detected
+        condition: B
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: sum(ml_model_input_data_drift{model_name="wine-quality-rf"}) or vector(0)
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    type: last
+              datasource:
+                name: Expression
+                type: __expr__
+                uid: __expr__
+              expression: A
+              reducer: last
+              type: threshold
+              refId: B
+        noDataState: OK
+        execErrState: Alerting
+        for: 1m
+        annotations:
+          summary: "Data drift terdeteksi pada input features"
+          description: "Satu atau lebih input features menunjukkan data drift (z-score > 3 dari distribusi training)."
+        labels:
+          severity: critical
+          service: wine-quality-model
+
+      # Alert 4: High Memory Usage
+      - uid: ml-high-memory
+        title: High Memory Usage
+        condition: B
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: ml_model_memory_usage_bytes{model_name="wine-quality-rf"} / 1024 / 1024
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 500
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - B
+                  reducer:
+                    type: last
+              datasource:
+                name: Expression
+                type: __expr__
+                uid: __expr__
+              expression: A
+              reducer: last
+              type: threshold
+              refId: B
+        noDataState: OK
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          summary: "Penggunaan memory model melebihi 500MB"
+          description: "Memory usage proses model serving melebihi 500MB."
+        labels:
+          severity: warning
+          service: wine-quality-model

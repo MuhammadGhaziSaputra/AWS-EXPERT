@@ -1,0 +1,130 @@
+name: ML Training CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'MLProject/**'
+  workflow_dispatch:
+    inputs:
+      n_estimators:
+        description: 'Number of trees'
+        required: false
+        default: '200'
+      max_depth:
+        description: 'Max depth of trees'
+        required: false
+        default: '10'
+
+jobs:
+  train-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.7'
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: mlflow-env
+          python-version: '3.12.7'
+          auto-activate-base: false
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mlflow==2.19.0 scikit-learn pandas numpy matplotlib seaborn
+
+      - name: Run MLflow Project
+        working-directory: MLProject
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+        run: |
+          python modelling.py \
+            --n_estimators ${{ github.event.inputs.n_estimators || '200' }} \
+            --max_depth ${{ github.event.inputs.max_depth || '10' }} \
+            --min_samples_split 5 \
+            --min_samples_leaf 2 \
+            --data_dir wine_quality_preprocessing
+
+      - name: Upload model artifacts to GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: ml-model-artifacts
+          path: |
+            MLProject/mlruns/
+          retention-days: 30
+
+      - name: Save model artifacts to repository
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Create artifacts directory
+          mkdir -p saved_artifacts
+          
+          # Copy latest model artifacts
+          if [ -d "MLProject/mlruns" ]; then
+            cp -r MLProject/mlruns saved_artifacts/
+          fi
+          
+          git add saved_artifacts/
+          git diff --staged --quiet || git commit -m "Auto-save model artifacts from CI [skip ci]"
+          git push
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker Image with MLflow
+        run: |
+          # Get the latest run_id from the MLflow artifacts
+          LATEST_RUN=$(ls -t MLProject/mlruns/0/ 2>/dev/null | head -1)
+          
+          if [ -n "$LATEST_RUN" ] && [ -d "MLProject/mlruns/0/$LATEST_RUN/artifacts/model" ]; then
+            echo "Building Docker image from run: $LATEST_RUN"
+            mlflow models build-docker \
+              -m "MLProject/mlruns/0/$LATEST_RUN/artifacts/model" \
+              -n "${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model" \
+              --enable-mlserver
+          else
+            echo "Building Docker image from MLProject directory"
+            cd MLProject
+            mlflow models build-docker \
+              -m "model" \
+              -n "${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model" \
+              --enable-mlserver
+          fi
+
+      - name: Push Docker Image to Docker Hub
+        run: |
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:latest \
+            ${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:${{ github.sha }}
+          
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:${{ github.sha }}
+          
+          echo "✅ Docker image pushed successfully!"
+          echo "   Image: ${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:latest"
+
+      - name: Job Summary
+        run: |
+          echo "## 🎉 CI Pipeline Completed!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Model artifacts saved to repository" >> $GITHUB_STEP_SUMMARY
+          echo "- Docker image pushed to Docker Hub" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Docker Image" >> $GITHUB_STEP_SUMMARY
+          echo '- `${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:latest`' >> $GITHUB_STEP_SUMMARY
+          echo '- `${{ secrets.DOCKERHUB_USERNAME }}/wine-quality-model:${{ github.sha }}`' >> $GITHUB_STEP_SUMMARY

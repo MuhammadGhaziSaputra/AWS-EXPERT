@@ -1,0 +1,47 @@
+name: Preprocessing Pipeline
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'wine_quality_raw/**'
+      - 'preprocessing/**'
+  workflow_dispatch:
+
+jobs:
+  preprocess:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.7'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy scikit-learn
+
+      - name: Run preprocessing pipeline
+        run: |
+          cd preprocessing
+          python automate_gaji.py
+
+      - name: Upload preprocessed data
+        uses: actions/upload-artifact@v4
+        with:
+          name: wine-quality-preprocessed
+          path: preprocessing/wine_quality_preprocessing/
+          retention-days: 30
+
+      - name: Commit preprocessed data
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add preprocessing/wine_quality_preprocessing/
+          git diff --staged --quiet || git commit -m "Auto-update preprocessed data [skip ci]"
+          git push

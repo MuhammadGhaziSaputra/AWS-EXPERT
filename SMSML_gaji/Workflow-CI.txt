@@ -1,0 +1,17 @@
+Tautan Repository GitHub Kriteria 3 (Workflow CI):
+https://github.com/MuhammadGhaziSaputra/Workflow-CI
+
+Catatan:
+- Ganti <username> dengan username GitHub Anda
+- Pastikan visibilitas repository diatur ke PUBLIC
+- Repository harus berisi:
+  1. .github/workflows/ci.yml
+  2. MLProject/modelling.py
+  3. MLProject/conda.yaml
+  4. MLProject/MLProject
+  5. MLProject/wine_quality_preprocessing/ (preprocessed data)
+
+Secrets yang perlu ditambahkan di GitHub:
+  - MLFLOW_TRACKING_URI: URI MLflow tracking server
+  - DOCKERHUB_USERNAME: Username Docker Hub Anda
+  - DOCKERHUB_TOKEN: Access token Docker Hub

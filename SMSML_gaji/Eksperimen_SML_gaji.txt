@@ -1,0 +1,12 @@
+Tautan Repository GitHub Kriteria 1 (Eksperimen):
+https://github.com/MuhammadGhaziSaputra/Eksperimen_SML_gaji
+
+Catatan:
+- Ganti <username> dengan username GitHub Anda
+- Pastikan visibilitas repository diatur ke PUBLIC
+- Repository harus berisi:
+  1. .github/workflows/preprocessing.yml
+  2. wine_quality_raw/winequality-red.csv
+  3. preprocessing/Eksperimen_gaji.ipynb
+  4. preprocessing/automate_gaji.py
+  5. preprocessing/wine_quality_preprocessing/ (hasil preprocessing)

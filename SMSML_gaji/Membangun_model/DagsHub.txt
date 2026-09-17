@@ -1,0 +1,8 @@
+Tautan DagsHub:
+https://dagshub.com/MuhammadGhaziSaputra/wine-quality-mlops
+
+Catatan:
+- Ganti MuhammadGhaziSaputra dengan username DagsHub Anda jika berbeda
+- Repository ini menyimpan artefak MLflow secara online
+- Pastikan repository sudah dibuat di DagsHub sebelum menjalankan modelling_tuning.py
+- Untuk setup, uncomment bagian DagsHub di modelling_tuning.py
