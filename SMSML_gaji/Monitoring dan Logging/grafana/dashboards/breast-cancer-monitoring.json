@@ -19,12 +19,12 @@
   "links": [],
   "panels": [
     {
-      "title": "🍷 Breast Cancer ML Model - Monitoring Dashboard",
+      "title": "🏥 Breast Cancer ML Model - Monitoring Dashboard",
       "type": "text",
       "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
       "id": 100,
       "options": {
-        "content": "## Real-time monitoring untuk model prediksi kualitas wine | Author: gaji",
+        "content": "## Real-time monitoring untuk model prediksi Breast Cancer | Author: gaji",
         "mode": "markdown"
       }
     },
@@ -205,19 +205,19 @@
       }
     },
     {
-      "title": "Predictions per Class (Good vs Bad)",
+      "title": "Predictions per Class (Benign vs Malignant)",
       "type": "piechart",
       "gridPos": { "h": 8, "w": 6, "x": 0, "y": 6 },
       "id": 7,
       "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
       "targets": [
         {
-          "expr": "ml_model_predictions_total{prediction_class=\"Good\"}",
+          "expr": "ml_model_predictions_total{prediction_class=\"Benign\"}",
           "legendFormat": "Benign",
           "refId": "A"
         },
         {
-          "expr": "ml_model_predictions_total{prediction_class=\"Bad\"}",
+          "expr": "ml_model_predictions_total{prediction_class=\"Malignant\"}",
           "legendFormat": "Malignant",
           "refId": "B"
         }

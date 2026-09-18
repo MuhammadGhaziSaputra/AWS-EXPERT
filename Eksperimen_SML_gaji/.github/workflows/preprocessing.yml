@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'wine_quality_raw/**'
+      - 'breast_cancer_raw/**'
       - 'preprocessing/**'
   workflow_dispatch:
 
@@ -34,14 +34,14 @@ jobs:
       - name: Upload preprocessed data
         uses: actions/upload-artifact@v4
         with:
-          name: wine-quality-preprocessed
-          path: preprocessing/wine_quality_preprocessing/
+          name: breast-cancer-preprocessed
+          path: preprocessing/breast_cancer_preprocessing/
           retention-days: 30
 
       - name: Commit preprocessed data
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add preprocessing/wine_quality_preprocessing/
+          git add preprocessing/breast_cancer_preprocessing/
           git diff --staged --quiet || git commit -m "Auto-update preprocessed data [skip ci]"
           git push

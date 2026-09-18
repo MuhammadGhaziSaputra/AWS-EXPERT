@@ -79,18 +79,54 @@ def load_model():
     for path in model_paths:
         if os.path.exists(path):
             model = joblib.load(path)
-            print(f"✅ Model loaded from: {path}")
-            return
-    print("⚠️ No saved model found. Creating demo model for monitoring...")
-    X, y = make_classification(n_samples=569, n_features=30, n_classes=2, random_state=42)
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X, y)
-    joblib.dump(model, 'model.pkl')
-    
-    MODEL_ACCURACY.labels(model_name=model_name).set(0.95)
-    MODEL_PRECISION.labels(model_name=model_name).set(0.94)
-    MODEL_RECALL.labels(model_name=model_name).set(0.96)
-    MODEL_F1_SCORE.labels(model_name=model_name).set(0.95)
+            print(f"Model loaded from: {path}")
+            break
+    else:
+        print("No saved model found. Creating demo model for monitoring...")
+        X, y = make_classification(n_samples=569, n_features=30, n_classes=2, random_state=42)
+        model = RandomForestClassifier(n_estimators=100, random_state=42)
+        model.fit(X, y)
+        joblib.dump(model, 'model.pkl')
+
+    # Evaluate model and set metrics gauges
+    # Load test data for evaluation
+    test_data_dirs = [
+        os.path.join(os.path.dirname(__file__), '..', 'Membangun_model', 'breast_cancer_preprocessing'),
+        os.path.join(os.path.dirname(__file__), 'breast_cancer_preprocessing'),
+    ]
+    for data_dir in test_data_dirs:
+        X_test_path = os.path.join(data_dir, 'X_test.csv')
+        y_test_path = os.path.join(data_dir, 'y_test.csv')
+        if os.path.exists(X_test_path) and os.path.exists(y_test_path):
+            try:
+                import pandas as pd
+                from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+                X_test = pd.read_csv(X_test_path)
+                y_test = pd.read_csv(y_test_path).values.ravel()
+                y_pred = model.predict(X_test)
+                acc = accuracy_score(y_test, y_pred)
+                prec = precision_score(y_test, y_pred, zero_division=0)
+                rec = recall_score(y_test, y_pred, zero_division=0)
+                f1 = f1_score(y_test, y_pred, zero_division=0)
+                MODEL_ACCURACY.labels(model_name=model_name).set(acc)
+                MODEL_PRECISION.labels(model_name=model_name).set(prec)
+                MODEL_RECALL.labels(model_name=model_name).set(rec)
+                MODEL_F1_SCORE.labels(model_name=model_name).set(f1)
+                print(f"Model metrics set: accuracy={acc:.4f}, precision={prec:.4f}, recall={rec:.4f}, f1={f1:.4f}")
+            except Exception as e:
+                print(f"Could not evaluate model: {e}")
+                MODEL_ACCURACY.labels(model_name=model_name).set(0.95)
+                MODEL_PRECISION.labels(model_name=model_name).set(0.94)
+                MODEL_RECALL.labels(model_name=model_name).set(0.96)
+                MODEL_F1_SCORE.labels(model_name=model_name).set(0.95)
+            break
+    else:
+        # Fallback: set default metrics
+        MODEL_ACCURACY.labels(model_name=model_name).set(0.95)
+        MODEL_PRECISION.labels(model_name=model_name).set(0.94)
+        MODEL_RECALL.labels(model_name=model_name).set(0.96)
+        MODEL_F1_SCORE.labels(model_name=model_name).set(0.95)
+
 
 def update_system_metrics():
     while True:

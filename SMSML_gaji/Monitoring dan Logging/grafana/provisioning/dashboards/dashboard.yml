@@ -1,7 +1,7 @@
 apiVersion: 1
 
 providers:
-  - name: 'Wine Quality ML Dashboards'
+  - name: 'Breast Cancer ML Dashboards'
     orgId: 1
     folder: 'ML Monitoring'
     type: file

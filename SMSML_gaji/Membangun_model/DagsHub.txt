@@ -1,5 +1,5 @@
 Tautan DagsHub:
-https://dagshub.com/MuhammadGhaziSaputra/wine-quality-mlops
+https://dagshub.com/MuhammadGhaziSaputra/breast-cancer-mlops
 
 Catatan:
 - Ganti MuhammadGhaziSaputra dengan username DagsHub Anda jika berbeda

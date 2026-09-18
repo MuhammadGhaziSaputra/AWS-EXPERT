@@ -14,7 +14,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:8001']
         labels:
-          service: 'wine-quality-model'
+          service: 'breast-cancer-model'
           environment: 'local'
           author: 'gaji'
     metrics_path: '/metrics'
