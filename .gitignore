@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+.env
+mlruns/
+mlartifacts/
+*.pkl
+*.joblib
+Workflow-CI-Repo/

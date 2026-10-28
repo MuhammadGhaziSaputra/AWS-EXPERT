@@ -1,17 +1,42 @@
 Tautan Repository GitHub Kriteria 3 (Workflow CI):
-https://github.com/MuhammadGhaziSaputra/AWS-EXPERT/tree/main/Workflow-CI
+https://github.com/MuhammadGhaziSaputra/Workflow-CI
 
-Catatan:
-- Ganti <username> dengan username GitHub Anda
-- Pastikan visibilitas repository diatur ke PUBLIC
-- Repository harus berisi:
-  1. .github/workflows/ci.yml
-  2. MLProject/modelling.py
-  3. MLProject/conda.yaml
-  4. MLProject/MLProject
-  5. MLProject/breast_cancer_preprocessing/ (preprocessed data)
+Tautan Docker Hub:
+https://hub.docker.com/r/muhammadghazi/breast-cancer-model
 
-Secrets yang perlu ditambahkan di GitHub:
-  - MLFLOW_TRACKING_URI: URI MLflow tracking server
-  - DOCKERHUB_USERNAME: Username Docker Hub Anda
-  - DOCKERHUB_TOKEN: Access token Docker Hub
+============================================================
+Catatan Revisi Kriteria 3 (Membuat Workflow CI):
+============================================================
+1. Repository telah dipisahkan secara independen (terpisah dari monorepo AWS-EXPERT) khusus untuk automasi CI / CD:
+   Repository: https://github.com/MuhammadGhaziSaputra/Workflow-CI
+
+2. Isi repositori hanya memuat berkas sesuai kriteria 3:
+   Workflow-CI/
+   ├── .github/
+   │   └── workflows/
+   │       └── ci.yml
+   ├── MLProject/
+   │   ├── modelling.py
+   │   ├── conda.yaml
+   │   └── MLProject
+   ├── breast_cancer_preprocessing/
+   │   ├── X_train.csv
+   │   ├── X_test.csv
+   │   ├── y_train.csv
+   │   ├── y_test.csv
+   │   ├── metadata.json
+   │   └── scaler_info.json
+   ├── DOCKERHUB_LINK.md
+   ├── README.md
+   └── .gitignore
+
+3. Alur Workflow CI GitHub Actions (Retraining Model Otomatis dengan MLflow Project):
+   - Set up job
+   - Run actions/checkout@v3
+   - Set up Python 3.12.7
+   - Check Env
+   - Install dependencies
+   - Run mlflow project
+   - Get latest MLflow run_id
+
+Trigger retraining berjalan otomatis setiap ada push ke branch main, atau dapat dipicu secara manual via workflow_dispatch di tab GitHub Actions.
