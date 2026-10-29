@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
 COPY 3.prometheus_exporter.py app.py
+COPY model.pkl model.pkl
 COPY breast_cancer_preprocessing/ breast_cancer_preprocessing/
 
 # Expose ports

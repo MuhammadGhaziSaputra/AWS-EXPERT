@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -19,21 +22,34 @@
   "links": [],
   "panels": [
     {
-      "title": "🏥 Breast Cancer ML Model - Monitoring Dashboard",
+      "title": "Dashboard-muhammad_ghazi_sptr1",
       "type": "text",
-      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
       "id": 100,
       "options": {
-        "content": "## Real-time monitoring untuk model prediksi Breast Cancer | Author: gaji",
+        "content": "## Real-time monitoring untuk model prediksi Breast Cancer | Author: muhammad_ghazi_sptr1",
         "mode": "markdown"
       }
     },
     {
       "title": "Total Predictions",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 2 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 2
+      },
       "id": 1,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "sum(ml_model_predictions_total)",
@@ -43,13 +59,24 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "blue", "value": null },
-              { "color": "green", "value": 10 },
-              { "color": "yellow", "value": 100 }
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 10
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              }
             ]
           },
           "unit": "short"
@@ -59,9 +86,17 @@
     {
       "title": "Prediction Errors",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 2 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 2
+      },
       "id": 2,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "sum(ml_model_prediction_errors_total) or vector(0)",
@@ -71,13 +106,24 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 1 },
-              { "color": "red", "value": 5 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
             ]
           },
           "unit": "short"
@@ -87,9 +133,17 @@
     {
       "title": "Model Accuracy",
       "type": "gauge",
-      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 2 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 2
+      },
       "id": 3,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "ml_model_accuracy{model_name=\"breast-cancer-rf\"}",
@@ -99,15 +153,26 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "min": 0,
           "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null },
-              { "color": "yellow", "value": 0.7 },
-              { "color": "green", "value": 0.85 }
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.7
+              },
+              {
+                "color": "green",
+                "value": 0.85
+              }
             ]
           },
           "unit": "percentunit"
@@ -117,9 +182,17 @@
     {
       "title": "Model Precision",
       "type": "gauge",
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 2 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 2
+      },
       "id": 4,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "ml_model_precision{model_name=\"breast-cancer-rf\"}",
@@ -129,15 +202,26 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "min": 0,
           "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null },
-              { "color": "yellow", "value": 0.7 },
-              { "color": "green", "value": 0.85 }
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.7
+              },
+              {
+                "color": "green",
+                "value": 0.85
+              }
             ]
           },
           "unit": "percentunit"
@@ -147,9 +231,17 @@
     {
       "title": "Model Recall",
       "type": "gauge",
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 2 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 2
+      },
       "id": 5,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "ml_model_recall{model_name=\"breast-cancer-rf\"}",
@@ -159,15 +251,26 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "min": 0,
           "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null },
-              { "color": "yellow", "value": 0.7 },
-              { "color": "green", "value": 0.85 }
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.7
+              },
+              {
+                "color": "green",
+                "value": 0.85
+              }
             ]
           },
           "unit": "percentunit"
@@ -177,9 +280,17 @@
     {
       "title": "Model F1 Score",
       "type": "gauge",
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 2 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 2
+      },
       "id": 6,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "ml_model_f1_score{model_name=\"breast-cancer-rf\"}",
@@ -189,15 +300,26 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "min": 0,
           "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null },
-              { "color": "yellow", "value": 0.7 },
-              { "color": "green", "value": 0.85 }
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.7
+              },
+              {
+                "color": "green",
+                "value": 0.85
+              }
             ]
           },
           "unit": "percentunit"
@@ -207,9 +329,17 @@
     {
       "title": "Predictions per Class (Benign vs Malignant)",
       "type": "piechart",
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 6 },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 6
+      },
       "id": 7,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "ml_model_predictions_total{prediction_class=\"Benign\"}",
@@ -224,16 +354,26 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" }
+          "color": {
+            "mode": "palette-classic"
+          }
         }
       }
     },
     {
       "title": "Prediction Rate (per 5m)",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 10, "x": 6, "y": 6 },
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 6,
+        "y": 6
+      },
       "id": 8,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "rate(ml_model_predictions_total[5m])",
@@ -243,7 +383,9 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "smooth",
@@ -259,9 +401,17 @@
     {
       "title": "Request Rate (per minute)",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 6 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 6
+      },
       "id": 9,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "ml_model_request_rate_per_minute{model_name=\"breast-cancer-rf\"}",
@@ -271,12 +421,20 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "blue", "value": null },
-              { "color": "green", "value": 1 }
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
             ]
           },
           "unit": "reqpm"
@@ -286,9 +444,17 @@
     {
       "title": "Uptime",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 6 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 6
+      },
       "id": 10,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "ml_model_uptime_seconds{model_name=\"breast-cancer-rf\"}",
@@ -298,11 +464,16 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null }
+              {
+                "color": "green",
+                "value": null
+              }
             ]
           },
           "unit": "s"
@@ -312,9 +483,17 @@
     {
       "title": "Memory Usage",
       "type": "timeseries",
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 10 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 10
+      },
       "id": 11,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "ml_model_memory_usage_bytes{model_name=\"breast-cancer-rf\"}",
@@ -324,7 +503,10 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "fixedColor": "purple", "mode": "fixed" },
+          "color": {
+            "fixedColor": "purple",
+            "mode": "fixed"
+          },
           "custom": {
             "drawStyle": "line",
             "fillOpacity": 15,
@@ -337,9 +519,17 @@
     {
       "title": "CPU Usage",
       "type": "timeseries",
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 10 },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 10
+      },
       "id": 12,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "ml_model_cpu_usage_percent{model_name=\"breast-cancer-rf\"}",
@@ -349,7 +539,10 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "fixedColor": "orange", "mode": "fixed" },
+          "color": {
+            "fixedColor": "orange",
+            "mode": "fixed"
+          },
           "custom": {
             "drawStyle": "line",
             "fillOpacity": 15,
@@ -364,9 +557,17 @@
     {
       "title": "Prediction Latency (p50, p90, p99)",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
       "id": 13,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "histogram_quantile(0.50, rate(ml_model_prediction_latency_seconds_bucket{model_name=\"breast-cancer-rf\"}[5m]))",
@@ -386,7 +587,9 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "smooth",
@@ -400,9 +603,17 @@
     {
       "title": "Confidence Score Distribution",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
       "id": 14,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "histogram_quantile(0.50, rate(ml_model_confidence_score_bucket{model_name=\"breast-cancer-rf\"}[5m]))",
@@ -422,7 +633,9 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "smooth",
@@ -438,9 +651,17 @@
     {
       "title": "Data Drift Detection per Feature",
       "type": "table",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 22 },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
       "id": 15,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "ml_model_input_data_drift{model_name=\"breast-cancer-rf\"}",
@@ -452,12 +673,20 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "red", "value": 1 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
             ]
           },
           "custom": {
@@ -490,9 +719,17 @@
     {
       "title": "Request Processing Time Summary",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 22 },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 22
+      },
       "id": 16,
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "targets": [
         {
           "expr": "rate(ml_model_request_processing_seconds_sum{model_name=\"breast-cancer-rf\"}[5m]) / rate(ml_model_request_processing_seconds_count{model_name=\"breast-cancer-rf\"}[5m])",
@@ -502,7 +739,10 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "color": { "fixedColor": "dark-blue", "mode": "fixed" },
+          "color": {
+            "fixedColor": "dark-blue",
+            "mode": "fixed"
+          },
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "smooth",
@@ -516,7 +756,12 @@
   ],
   "refresh": "5s",
   "schemaVersion": 39,
-  "tags": ["ml", "breast-cancer", "monitoring", "gaji"],
+  "tags": [
+    "ml",
+    "breast-cancer",
+    "monitoring",
+    "gaji"
+  ],
   "templating": {
     "list": [
       {
@@ -544,7 +789,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Breast Cancer ML Model - Monitoring",
+  "title": "Dashboard-muhammad_ghazi_sptr1",
   "uid": "breast-cancer-ml-dashboard",
-  "version": 1
+  "version": 2
 }
