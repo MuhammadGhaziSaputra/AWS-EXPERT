@@ -7,7 +7,7 @@ https://hub.docker.com/r/muhammadghazi/breast-cancer-model
 ============================================================
 Catatan Revisi Kriteria 3 (Membuat Workflow CI):
 ============================================================
-1. Repository telah dipisahkan secara independen (terpisah dari monorepo AWS-EXPERT) khusus untuk automasi CI / CD:
+1. Repository Independen Khusus Workflow CI:
    Repository: https://github.com/MuhammadGhaziSaputra/Workflow-CI
 
 2. Isi repositori hanya memuat berkas sesuai kriteria 3:
@@ -39,4 +39,12 @@ Catatan Revisi Kriteria 3 (Membuat Workflow CI):
    - Run mlflow project
    - Get latest MLflow run_id
 
-Trigger retraining berjalan otomatis setiap ada push ke branch main, atau dapat dipicu secara manual via workflow_dispatch di tab GitHub Actions.
+4. Perbaikan Sesuai Catatan Reviewer:
+   - Menambahkan `set -e` dan `set -o pipefail` pada step `Run mlflow project` agar workflow gagal secara eksplisit jika terjadi error pada eksekusi training, dan tidak memunculkan pesan sukses palsu.
+   - Penanganan MLFLOW_TRACKING_URI:
+     * Menghapus sanitasi spasi / karakter tak sengaja pada nilai tracking URI.
+     * Jika tracking URI mengarah ke localhost/127.0.0.1, runner otomatis menjalankan MLflow tracking server lokal pada runner port 5000 sehingga runner dapat melakukan tracking tanpa terputus 'Connection refused'.
+     * Jika tracking URI remote (DagsHub) disediakan pada secret GitHub, workflow akan menggunakan URI remote tersebut.
+     * Jika tidak ada tracking URI, workflow menggunakan tracking file lokal (mlruns) runner.
+   - Step `Get latest MLflow run_id` mengambil dan menampilkan Run ID, Status, serta seluruh metrik hasil retraining MLflow secara otomatis.
+   - Retraining berjalan otomatis setiap ada push ke branch main atau dipicu via workflow_dispatch.
